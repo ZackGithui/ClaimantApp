@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "334285924242",
+    "project_id": "pets-73e3f",
+    "storage_bucket": "pets-73e3f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334285924242:android:99f95125717f060700834b",
+        "android_client_info": {
+          "package_name": "com.example.claimantapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI8hgsQG-UHN4-GHxGOPei3M2piKEqRgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334285924242:android:0c50d7e6f04132c900834b",
+        "android_client_info": {
+          "package_name": "com.example.pet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI8hgsQG-UHN4-GHxGOPei3M2piKEqRgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
