@@ -1,5 +1,7 @@
 package com.example.claimantapp
 
+import android.app.ActionBar
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,16 +20,27 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.claimantapp.presentation.forgotPassword.ForgotPassword
+import com.example.claimantapp.presentation.homeScreen.HomeScreen
 import com.example.claimantapp.presentation.navigation.AppScreens
+import com.example.claimantapp.presentation.profile.ProfileScreen
 import com.example.claimantapp.presentation.signIn.SignInScreen
 import com.example.claimantapp.presentation.signUp.SignUpScreen
 
 import com.example.claimantapp.ui.theme.ClaimantAppTheme
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.auth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+
         installSplashScreen()
         setContent {
             ClaimantAppTheme {
@@ -49,9 +62,16 @@ fun App() {
             SignInScreen( navController = navController)
         }
         composable(AppScreens.ForgotPasswordScreen.route){
-            ForgotPassword(navController = navController)
+            ForgotPassword( navController = navController)
 
         }
+        composable(AppScreens.HomeScreen.route){
+            HomeScreen(navController = navController)
+        }
+        composable(AppScreens.ProfileScreen.route){
+            ProfileScreen(navController = navController)
+        }
+        
         }
     }
 

@@ -6,7 +6,7 @@ sealed class SignUpEvent {
     data class OnUsernameChange(val username:String):SignUpEvent()
     data class OnEmailChange(val email:String):SignUpEvent()
     data class OnPasswordChange(val password:String):SignUpEvent()
-    data class OnConfirmPassword(val confirmPassword:String):SignUpEvent()
+
     data object OnSignUpButtonClicked: SignUpEvent()
     data object OnSignInButtonClicked:SignUpEvent()
 }

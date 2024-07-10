@@ -27,7 +27,7 @@ import com.example.claimantapp.ui.theme.ClaimantAppTheme
 @Composable
 fun ClaimantTextField(
     modifier: Modifier = Modifier,
-    isError:Boolean,
+
 
 
     value: String="",
@@ -41,16 +41,19 @@ fun ClaimantTextField(
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
 
+
+
+
         value = value,
         onValueChange = onValueChange,
         shape = MaterialTheme.shapes.large,
-        textStyle = MaterialTheme.typography.bodyLarge,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
 
         placeholder = {
             Text(
                 text = placeholder,
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    MaterialTheme.colorScheme.onBackground.copy( alpha = 0.5f)
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp
+                    //MaterialTheme.colorScheme.onBackground.copy( alpha = 0.5f)
                 ),
                 color = MaterialTheme.colorScheme.onBackground,
 
@@ -66,7 +69,7 @@ fun ClaimantTextField(
 fun ClaimantPasswordTextField(
         modifier: Modifier = Modifier,
         value: String="",
-        isError: Boolean,
+
 
         onValueChange: (String) -> Unit={},
         placeholder: String="",
@@ -82,6 +85,7 @@ fun ClaimantPasswordTextField(
             modifier=modifier.fillMaxWidth(),
             singleLine = true,
 
+
             value = value,
             onValueChange = onValueChange,
            shape = MaterialTheme.shapes.large,
@@ -89,8 +93,8 @@ fun ClaimantPasswordTextField(
             textStyle = MaterialTheme.typography.bodyLarge,
             placeholder = {
                     Text(text = placeholder,
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp
+                    //MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                 ),
                         color = MaterialTheme.colorScheme.onBackground,
                )},
@@ -112,7 +116,7 @@ fun ClaimantPasswordTextField(
 @Composable
 private fun ClaimantTextFieldPrev() {
     ClaimantAppTheme {
-        ClaimantTextField(isError=false)
+        ClaimantTextField()
 
 
 

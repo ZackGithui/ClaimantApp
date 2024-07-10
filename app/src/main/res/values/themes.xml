@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.mySplashScreen" parent="Theme.SplashScreen">
        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/icon</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
         <item name="postSplashScreenTheme">@style/Theme.ClaimantApp</item>
     </style>
 

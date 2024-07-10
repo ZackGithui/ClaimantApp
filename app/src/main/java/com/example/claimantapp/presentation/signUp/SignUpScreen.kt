@@ -20,10 +20,12 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -52,14 +55,39 @@ import com.example.claimantapp.presentation.components.ClaimantTextField
 import com.example.claimantapp.presentation.navigation.AppScreens
 import com.example.claimantapp.rememberWindowSize
 import com.example.claimantapp.ui.theme.ClaimantAppTheme
+import com.example.claimantapp.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 
 @Composable
 fun SignUpScreen(
- signUpViewModel: SignUpViewModel= viewModel(),
+ signUpViewModel: SignUpViewModel= hiltViewModel(),
                  navController: NavHostController) {
   val state= signUpViewModel.signUpState.collectAsState().value
+
+  val signUpFlow=signUpViewModel.signUpFlow.collectAsState()
+  signUpFlow.value?.let {
+    when(it){
+      is Resource.Error -> {
+
+      }
+      is Resource.Loading -> {
+
+        CircularProgressIndicator()
+
+      }
+      is Resource.Success -> {
+        LaunchedEffect(Unit) {
+          navController.navigate(AppScreens.HomeScreen.route){
+            popUpTo(AppScreens.SignUpScreen.route){inclusive=true}
+          }
+
+        }
+
+      }
+    }
+  }
 
   SignUpScreenContent(
     state = state,
@@ -70,10 +98,7 @@ fun SignUpScreen(
           signUpViewModel.usernameChange(event.username)
         }
 
-        is SignUpEvent.OnConfirmPassword -> {
-          signUpViewModel.confirmPasswordChange(event.confirmPassword)
 
-        }
         is SignUpEvent.OnEmailChange -> {
           signUpViewModel.emailChange(event.email)
         }
@@ -84,6 +109,7 @@ fun SignUpScreen(
           signUpViewModel.viewPassword()
         }
         SignUpEvent.OnSignUpButtonClicked -> {
+          signUpViewModel.signUp(state.username,state.email,state.password)
 
         }
 
@@ -105,6 +131,7 @@ fun SignUpScreen(
 }
 
 
+
 @Composable
 fun SignUpScreenContent(
   modifier: Modifier = Modifier,
@@ -123,7 +150,7 @@ fun SignUpScreenContent(
 //fun CompactScreen(modifier: Modifier = Modifier,
                   //state: SignUpStates,
                   //onEvent: (SignUpEvent) -> Unit) {
-  var showErrors by remember { mutableStateOf(false) }
+
 
 
   Column(
@@ -176,7 +203,7 @@ fun SignUpScreenContent(
 
 
 
-    Spacer(modifier = Modifier.height(16.dp))
+   Spacer(modifier = Modifier.height(7.dp))
 
     Column(
       modifier = Modifier
@@ -186,126 +213,80 @@ fun SignUpScreenContent(
       ) {
       Column {
 
-        var userNameError by remember {
-          mutableStateOf(false)
-        }
-        Text(
+
+       Text(
           text = stringResource(id = R.string.username),
           style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
           color = MaterialTheme.colorScheme.onBackground
         )
+
+
         ClaimantTextField(
+
           value = state.username,
           onValueChange = {
             onEvent(SignUpEvent.OnUsernameChange(it))
-           if(showErrors) userNameError= state.username.isBlank()
-
-
-
           },
-
-          placeholder = stringResource(id = R.string.placeholder_username),
-          isError=userNameError && showErrors
-
-
+          placeholder = stringResource(id = R.string.username),
         )
-        if (showErrors && userNameError){
-          Text(text = "Enter a valid Username",
-           //style = MaterialTheme.colorScheme.error
-          )
-
-        }
+        Text(text = state.usernameErrorMessage?:"")
 
 
 
-
-
-        Spacer(modifier = Modifier.height(10.dp))
+       // Spacer(modifier = Modifier.height(10.dp))
         Text(
           text = stringResource(id = R.string.email),
           style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
           color = MaterialTheme.colorScheme.onBackground
         )
-        var errorEmail by remember {
-          mutableStateOf(false)
-        }
+
+
         ClaimantTextField(
           value = state.email,
           onValueChange = { onEvent(SignUpEvent.OnEmailChange(it))
-                          if (showErrors)errorEmail= state.email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(state.email).matches()},
-          placeholder = stringResource(id = R.string.placeholder_email),
-          isError = errorEmail && showErrors
+                        },
+          placeholder = stringResource(id = R.string.email),
+
         )
-        if (errorEmail && showErrors){
-          Text(text = "Enter a valid email")
-        }
-        Spacer(modifier = Modifier.height(10.dp))
+        Text(text = state.emailErrorMessage?:"", color = Color.Red)
+        //Spacer(modifier = Modifier.height(10.dp))
         Text(
           text = stringResource(id = R.string.password),
           style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
           color = MaterialTheme.colorScheme.onBackground
         )
-        var passwordError by remember {
-          mutableStateOf(false)
-        }
-        val passwordRegex = "^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$".toRegex()
+
+
+
         ClaimantPasswordTextField(
           value = state.password,
           onValueChange = { onEvent(SignUpEvent.OnPasswordChange(it))
-                          if(showErrors)passwordError= state.password.isBlank() || !state.password.matches(passwordRegex) },
-          placeholder = stringResource(id = R.string.placeholder_password),
+                          },
+          placeholder = stringResource(id = R.string.password),
           onTrailingIconClicked = {
             onEvent(SignUpEvent.OnPasswordEyeToggled)
 
           },
           isPasswordVisible = state.viewPassword,
-          isError = passwordError && showErrors
-        )
 
-        if (passwordError && showErrors){
-          Text(text = "A password must contain a letter, a digit and a special character ie #")
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-          text = stringResource(id = R.string.Confirm_password),
-          style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-          color = MaterialTheme.colorScheme.onBackground
         )
-        var confirmPasswordError by remember {
-          mutableStateOf(false)
-        }
-        ClaimantPasswordTextField(
-          value = state.confirmPassword,
-          onValueChange = { onEvent(SignUpEvent.OnConfirmPassword(it))
-                          if(showErrors)  confirmPasswordError= state.confirmPassword != state.password},
-          placeholder = stringResource(id = R.string.placeholder_Confirmpassword),
-          onTrailingIconClicked = {
-            onEvent(SignUpEvent.OnConfirmPasswordEyeToggled)
+        Text(text = state.passwordErrorMessage?:"", color = Color.Red)
 
-          },
-          isPasswordVisible = state.viewConfirmPassword,
-          isError =confirmPasswordError && showErrors
-        )
-        if(confirmPasswordError && showErrors){
-          Text(text = "password do not match")
-        }
+
+        //Spacer(modifier = Modifier.height(10.dp))
+
       }
       Spacer(modifier = Modifier.height(10.dp))
-      val passwordRegex = "^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$".toRegex()
+
       ClaimantButton(
         title = stringResource(id = R.string.signUp),
-        onClick = {  showErrors = true
-         var  userNameError = state.username.isBlank()
-          var errorEmail = state.email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(state.email).matches()
-        var  passwordError = state.password.isBlank() || !state.password.matches(passwordRegex)
-          var confirmPasswordError = state.confirmPassword != state.password
-          if (!userNameError && !errorEmail && !passwordError && !confirmPasswordError) {
-            // Handle successful sign-up
-          }
+        onClick = {
+          onEvent(SignUpEvent.OnSignUpButtonClicked)
         },
         modifier = Modifier.fillMaxWidth(),
 
         )
+
       Spacer(modifier = Modifier.height(8.dp))
       Row(
         modifier = Modifier
@@ -321,166 +302,19 @@ fun SignUpScreenContent(
           clickableText = stringResource(id = R.string.login),
           onClick = { onEvent(SignUpEvent.OnSignInButtonClicked) }
         )
+
       }
+
+
 
     }
-    // }
-  }
-}
-  //}
-//}
-
-/*@Composable
-fun MediumtoExtended( modifier: Modifier = Modifier,
-                      state: SignUpStates,
-                      onEvent: (SignUpEvent) -> Unit) {
-  Row (modifier = Modifier
-    .fillMaxWidth()
-    .background(MaterialTheme.colorScheme.background)
-    .padding(12.dp),
-    horizontalArrangement = Arrangement.SpaceAround){
-
-      Spacer(modifier = Modifier.height(10.dp))
-
-
-      Column(modifier = Modifier
-
-        .padding(top = 25.dp)
-        .fillMaxHeight(),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Center,
-
-
-      )
-      {
-
-
-        Image(
-          modifier = Modifier
-            .height(140.dp)
-            .width(140.dp),
-          painter = painterResource(id = R.drawable.icon),
-          contentDescription = "Background Image",
-          alignment = Alignment.Center,
-          contentScale = ContentScale.FillBounds,
-
-
-          )
-        Text(
-          text = stringResource(id = R.string.create_account),
-          style = MaterialTheme.typography.titleLarge,
-          color = MaterialTheme.colorScheme.onBackground,
-          fontSize = 27.sp
-        )
-
-      }
-
-
-
-      Spacer(modifier = Modifier.width(16.dp))
-
-
-      Column(
-        modifier = Modifier
-        //  .padding(16.dp)
-          .fillMaxHeight(),
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Center
-
-
-
-        ) {
-        Column {
-          Text(
-            text = stringResource(id = R.string.username),
-            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-            color = MaterialTheme.colorScheme.onBackground
-          )
-          ClaimantTextField(
-            value = state.username,
-            onValueChange = {
-              onEvent(SignUpEvent.OnUsernameChange(it))
-            },
-            placeholder = stringResource(id = R.string.placeholder_username),
-          )
-
-          Spacer(modifier = Modifier.height(10.dp))
-          Text(
-            text = stringResource(id = R.string.email),
-            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-            color = MaterialTheme.colorScheme.onBackground
-          )
-          ClaimantTextField(
-            value = state.email,
-            onValueChange = { onEvent(SignUpEvent.OnEmailChange(it)) },
-            placeholder = stringResource(id = R.string.placeholder_email),
-          )
-          Spacer(modifier = Modifier.height(10.dp))
-          Text(
-            text = stringResource(id = R.string.password),
-            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-            color = MaterialTheme.colorScheme.onBackground
-          )
-          ClaimantPasswordTextField(
-            value = state.password,
-            onValueChange = { onEvent(SignUpEvent.OnPasswordChange(it)) },
-            placeholder = stringResource(id = R.string.placeholder_password),
-            onTrailingIconClicked = {
-              onEvent(SignUpEvent.OnPasswordEyeToggled)
-            },
-            isPasswordVisible = state.viewPassword
-          )
-          Spacer(modifier = Modifier.height(10.dp))
-          Text(
-            text = stringResource(id = R.string.Confirm_password),
-            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-            color = MaterialTheme.colorScheme.onBackground
-          )
-          ClaimantPasswordTextField(
-            value = state.confirmPassword,
-            onValueChange = { onEvent(SignUpEvent.OnConfirmPassword(it)) },
-            placeholder = stringResource(id = R.string.placeholder_Confirmpassword),
-            onTrailingIconClicked = {
-              onEvent(SignUpEvent.OnConfirmPasswordEyeToggled)
-            },
-            isPasswordVisible = state.viewConfirmPassword
-          )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-
-        ClaimantButton(
-          title = stringResource(id = R.string.signUp),
-          onClick = { onEvent(SignUpEvent.OnSignUpButtonClicked) },
-          modifier = Modifier.fillMaxWidth(),
-
-          )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-          horizontalArrangement = Arrangement.End,
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          ClaimantLabelButton(
-            unClickableText = stringResource(id = R.string.already_have_an_account),
-
-            //modifier = Modifier.padding(top = 13.dp),
-            clickableText = stringResource(id = R.string.login),
-            onClick = { onEvent(SignUpEvent.OnSignInButtonClicked) }
-          )
-        }
-
-      }
-      // }
 
 
 
   }
 
-}
-*/
 
+}
 
 
 

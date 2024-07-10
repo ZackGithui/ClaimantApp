@@ -16,11 +16,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -29,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.claimantapp.R
@@ -37,13 +41,42 @@ import com.example.claimantapp.presentation.components.ClaimantLabelButton
 import com.example.claimantapp.presentation.components.ClaimantPasswordTextField
 import com.example.claimantapp.presentation.components.ClaimantTextField
 import com.example.claimantapp.presentation.navigation.AppScreens
+import com.example.claimantapp.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun SignInScreen(
     navController:NavHostController,
-    signInViewModel:SignInViewModel= viewModel()) {
+    signInViewModel:SignInViewModel= hiltViewModel()
+) {
 
     val signInState=signInViewModel.signInState.collectAsState().value
+
+    val signIn=signInViewModel.loginFlow.collectAsState()
+    signIn.value?.let {
+        when(it){
+            is Resource.Error -> {
+
+            }
+            is Resource.Loading -> {
+                CircularProgressIndicator(
+                )
+            }
+            is Resource.Success -> {
+                LaunchedEffect(Unit) {
+                    navController.navigate(AppScreens.HomeScreen.route){
+                        popUpTo(AppScreens.SignUpScreen.route){
+                            inclusive=true
+                        }
+                    }
+
+                }
+
+            }
+        }
+    }
+
+
     SignInScreenContent(
         signInState = signInState,
         onEvent={event: SignInEvent ->
@@ -57,7 +90,7 @@ fun SignInScreen(
 
                 }
                 SignInEvent.OnSignInButtonClicked -> {
-                    navController.navigate(AppScreens.HomeScreen.route)
+                     signInViewModel.login(email = signInState.email, password = signInState.password)
                 }
                 SignInEvent.OnSignUpLabelButtonClicked -> {
                     navController.navigate(AppScreens.SignUpScreen.route)
@@ -91,7 +124,7 @@ fun SignInScreenContent(
         Column (modifier = modifier
             .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
-           // .padding(paddingValues)
+            // .padding(paddingValues)
             .padding(12.dp)){
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -138,7 +171,7 @@ fun SignInScreenContent(
                     value = signInState.email,
                     onValueChange = { onEvent(SignInEvent.OnEmailChange(it)) },
                     placeholder = stringResource(id = R.string.placeholder_email),
-                    isError = false
+
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
@@ -154,7 +187,7 @@ fun SignInScreenContent(
                     },
                     placeholder = stringResource(id = R.string.password),
                     isPasswordVisible = signInState.viewPassword,
-                    isError = false
+
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
@@ -176,7 +209,8 @@ fun SignInScreenContent(
                     onClick = { onEvent(SignInEvent.OnSignInButtonClicked) })
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .height(70.dp),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically

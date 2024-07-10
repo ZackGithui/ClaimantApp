@@ -1,7 +1,9 @@
 package com.example.claimantapp.presentation.forgotPassword
 
 import ForgotPasswordViewModel
+import android.content.Context
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,10 +34,13 @@ import com.example.claimantapp.R
 import com.example.claimantapp.presentation.components.ClaimantButton
 import com.example.claimantapp.presentation.components.ClaimantTextField
 import com.example.claimantapp.presentation.navigation.AppScreens
+import com.google.firebase.auth.FirebaseAuth
+import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 @Composable
-fun ForgotPassword(navController: NavHostController,forgotPasswordViewModel:ForgotPasswordViewModel= viewModel()) {
-
+fun ForgotPassword  ( navController: NavHostController, forgotPasswordViewModel:ForgotPasswordViewModel= viewModel()) {
+    val context= LocalContext.current.applicationContext
     val states=forgotPasswordViewModel.state
 ForgotPasswordContent(state = states,
     onEvent = {event :ForgotPasswordEvents->
@@ -44,7 +50,37 @@ ForgotPasswordContent(state = states,
                 forgotPasswordViewModel.onEmailChange(event.value)            }
 
             ForgotPasswordEvents.OnResetPassword -> {
-                navController.navigate(AppScreens.SignUpScreen.route)
+               if(states.email.isEmpty()){
+                   Toast.makeText(
+                       context,
+                       "Please enter an email!",
+                       Toast.LENGTH_LONG
+                   ).show()
+               }
+                else{
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(states.email)
+                        .addOnCompleteListener {task->
+                            if (task.isSuccessful){
+                                Toast.makeText(
+                                    context,
+                                    "Email sent successfully to reset your password",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                navController.navigate(AppScreens.SignInScreen.route)
+
+
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    task.exception!!.message.toString(),
+                                    Toast.LENGTH_LONG
+
+                                ).show()
+                            }
+
+                        }
+               }
             }
         }
     })
@@ -98,14 +134,14 @@ fun ForgotPasswordContent(modifier: Modifier=Modifier,
             value = state.email,
             onValueChange = {onEvent(ForgotPasswordEvents.OnEmailChange(it))},
             placeholder = stringResource(id = R.string.email),
-            isError = false
+
 
         )
         Spacer(modifier = Modifier.height(20.dp))
 
         ClaimantButton(
             title = stringResource(id = R.string.ResetPassword),
-            onClick = {ForgotPasswordEvents.OnResetPassword}
+            onClick = {onEvent(ForgotPasswordEvents.OnResetPassword)}
         )
 
 

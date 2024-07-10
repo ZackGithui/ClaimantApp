@@ -17,5 +17,7 @@
     <string name="NoAccount">Don\'t have an account?</string>
     <string name="icon">Icon</string>
     <string name="ResetPassword">Reset Password</string>
+    <string name="search">Search your asset</string>
+    <string name="logout">Log Out</string>
 
 </resources>

@@ -58,13 +58,13 @@ fun ClaimantButton(
             modifier = modifier,
             ){
             Text(text = unClickableText,
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 19.sp),
                 color = MaterialTheme.colorScheme.onBackground,)
 
         }
         TextButton(onClick = onClick) {
             Text(text = clickableText,
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 19.sp),
                 color = MaterialTheme.colorScheme.primary,)
 
         }

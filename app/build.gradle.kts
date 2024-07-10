@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
 }
 
@@ -82,4 +83,16 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-paging:2.6.1")
+
+//firebase
+    implementation("com.google.firebase:firebase-bom:33.1.1")
+    implementation("com.google.firebase:firebase-auth")
+
+    // Dagger - Hilt
+    implementation ("com.google.dagger:hilt-android:2.51.1")
+    annotationProcessor ("com.google.dagger:hilt-compiler:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    kapt("androidx.hilt:hilt-compiler:1.2.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }
+
