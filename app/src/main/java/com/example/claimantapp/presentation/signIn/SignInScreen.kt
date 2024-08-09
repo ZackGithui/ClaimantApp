@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +42,7 @@ import com.example.claimantapp.presentation.components.ClaimantLabelButton
 import com.example.claimantapp.presentation.components.ClaimantPasswordTextField
 import com.example.claimantapp.presentation.components.ClaimantTextField
 import com.example.claimantapp.presentation.navigation.AppScreens
+import com.example.claimantapp.saveOnboardingStatus
 import com.example.claimantapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 
@@ -49,7 +51,7 @@ fun SignInScreen(
     navController:NavHostController,
     signInViewModel:SignInViewModel= hiltViewModel()
 ) {
-
+    val context = LocalContext.current
     val signInState=signInViewModel.signInState.collectAsState().value
 
     val signIn=signInViewModel.loginFlow.collectAsState()
@@ -64,8 +66,10 @@ fun SignInScreen(
             }
             is Resource.Success -> {
                 LaunchedEffect(Unit) {
+
+                    saveOnboardingStatus(context, true)
                     navController.navigate(AppScreens.HomeScreen.route){
-                        popUpTo(AppScreens.SignUpScreen.route){
+                        popUpTo(AppScreens.SignInScreen.route){
                             inclusive=true
                         }
                     }
@@ -91,6 +95,7 @@ fun SignInScreen(
                 }
                 SignInEvent.OnSignInButtonClicked -> {
                      signInViewModel.login(email = signInState.email, password = signInState.password)
+
                 }
                 SignInEvent.OnSignUpLabelButtonClicked -> {
                     navController.navigate(AppScreens.SignUpScreen.route)
@@ -206,7 +211,10 @@ fun SignInScreenContent(
 
 
                 ClaimantButton(title = stringResource(id = R.string.SignIn),
-                    onClick = { onEvent(SignInEvent.OnSignInButtonClicked) })
+                    onClick = { onEvent(SignInEvent.OnSignInButtonClicked)
+
+                    
+                    })
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier

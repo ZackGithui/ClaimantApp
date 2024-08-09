@@ -54,7 +54,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel= hiltViewModel(),navControl
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription ="Back",
-                    tint = MaterialTheme.colorScheme.onBackground,
+
                     modifier = Modifier
                         .size(50.dp)
                         .background(MaterialTheme.colorScheme.primary))
@@ -99,6 +99,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel= hiltViewModel(),navControl
                 navController.navigate(AppScreens.SignInScreen.route){
                     popUpTo(AppScreens.HomeScreen.route){
                         inclusive=true
+
                     }
                 }})
 

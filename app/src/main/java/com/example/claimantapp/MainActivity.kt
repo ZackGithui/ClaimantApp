@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
@@ -54,7 +58,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = AppScreens.SignUpScreen.route){
+    val context = LocalContext.current
+    val onboardingStatusFlow = remember { readOnboardingStatus(context) }
+    val onboardingCompleted by onboardingStatusFlow.collectAsState(initial = false)
+    NavHost(navController = navController, startDestination = if(onboardingCompleted) AppScreens.HomeScreen.route else AppScreens.SignInScreen.route){
         composable(AppScreens.SignUpScreen.route){
             SignUpScreen( navController = navController)
         }

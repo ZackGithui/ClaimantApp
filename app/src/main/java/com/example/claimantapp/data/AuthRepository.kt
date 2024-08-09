@@ -1,9 +1,7 @@
-package com.example.claimantapp.data.repository
+package com.example.claimantapp.data
 
 import com.example.claimantapp.util.Resource
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.flow.Flow
 
 
 interface AuthRepository {

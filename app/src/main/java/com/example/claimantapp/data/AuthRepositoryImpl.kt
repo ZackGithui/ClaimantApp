@@ -1,17 +1,14 @@
-package com.example.claimantapp.data.repository
+package com.example.claimantapp.data
 
 import com.example.claimantapp.util.Resource
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
- class AuthRepositoryImpl @Inject constructor(private val firebaseAuth: FirebaseAuth): AuthRepository {
+ class AuthRepositoryImpl @Inject constructor(private val firebaseAuth: FirebaseAuth):
+     AuthRepository {
      override val currentUser: FirebaseUser?
          get() = firebaseAuth.currentUser
 

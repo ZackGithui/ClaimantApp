@@ -1,9 +1,7 @@
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.claimantapp.data.repository.AuthRepository
 import com.example.claimantapp.presentation.forgotPassword.ForgotState
-import javax.inject.Inject
 
 
 class ForgotPasswordViewModel :ViewModel(){

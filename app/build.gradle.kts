@@ -94,5 +94,14 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     kapt("androidx.hilt:hilt-compiler:1.2.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    //retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.moshi:moshi-kotlin:1.9.3")
+    implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    //datastore
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+
 }
 
