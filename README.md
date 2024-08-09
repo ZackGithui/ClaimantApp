@@ -18,8 +18,10 @@ Claimant App is an Android application designed to help users check for unclaime
 - **Dagger Hilt**: For dependency injection and managing app components.
 
   ## Images
+  
   ### Sign Up Screen
 <img src="https://github.com/user-attachments/assets/41418088-bdc0-4eb0-96a2-dfb6092a9d12" alt="Sign Up Screen" width="500"/>
+
 ### Sign In Screen
 <img src="https://github.com/user-attachments/assets/e2c7522d-a0fe-4bac-a34e-c2e8ddc2e3f7" alt="Sign In Screen" width="500"/>
 
