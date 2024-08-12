@@ -26,6 +26,12 @@ Claimant App is an Android application designed to help users check for unclaime
    
   <img src="https://github.com/user-attachments/assets/48c32bfb-c5b0-4d10-8e7d-4a73c4c9f526" alt="Profile Screen" width="30%" height="30%" />
 
+  <img src="https://github.com/user-attachments/assets/926fb322-542c-48b8-a522-0f99478e8db7" alt="error page" width="30%" height="30%"/>
+
+
+ 
+
+
 
 
   
