@@ -19,6 +19,7 @@
     <string name="ResetPassword">Reset Password</string>
     <string name="search">Search your asset</string>
     <string name="logout">Log Out</string>
+    <string name="nothing">Oops!! No Assets Found.</string>
     <string name="internet">There is a connection error. Please check your internet. </string>
 
 </resources>

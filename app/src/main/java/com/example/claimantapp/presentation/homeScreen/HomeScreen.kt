@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,11 +64,18 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        //Spacer(modifier = Modifier.height(10.dp))
+       
+
+        Box(modifier = Modifier.fillMaxWidth()) {
             IconButton(
                 onClick = { navController.navigate(AppScreens.ProfileScreen.route) },
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier
+                    .size(100.dp)
+                    .align(Alignment.TopEnd)
+
+
+
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.user),
@@ -77,7 +85,31 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         .clip(CircleShape)
                 )
             }
+
+
+    Image(
+        modifier = Modifier
+            .padding(top=30.dp)
+            .height(140.dp)
+            .width(140.dp)
+            .align(Alignment.Center)
+
+
+        ,
+        painter = painterResource(id = R.drawable.icon),
+        contentDescription = "Background Image",
+        alignment = Alignment.Center,
+        contentScale = ContentScale.FillBounds,
+
+        )
+
+Spacer(modifier = Modifier.width(50.dp))
+
+
+          
+
         }
+Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(id = R.string.search),
             style = MaterialTheme.typography.titleLarge,

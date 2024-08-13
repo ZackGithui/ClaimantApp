@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.claimantapp.presentation.components.NoInternet
+import com.example.claimantapp.presentation.components.NothingFound
 
 
 @Composable
@@ -102,7 +103,7 @@ fun SearchScreen(
 
 
                 },
-                placeholder = { Text(text = "Search")},
+                placeholder = { Text(text = "Search by your name or ID")},
                 singleLine = true,
                 leadingIcon = {Icons.Default.Search
                     Icon(imageVector = Icons.Default.Search, contentDescription = "search")
@@ -142,6 +143,9 @@ fun SearchScreen(
                 )
             if (state.error?.isNotEmpty()==true){
                 NoInternet()
+            }
+            else if (state.data.isEmpty() && state.onSearchQuery.isNotEmpty()){
+                NothingFound()
             }
             else{
 
